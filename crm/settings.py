@@ -7,8 +7,8 @@ SECRET_KEY = 'django-insecure-js7!18#rfu5_5w1&k=$o6y+g3cjokwa*=e6yi2(=5)^+ol@^@@
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['imran-proj1.herokuapp.com/',
-                 'www.imran-proj1.herokuapp.com/']
+ALLOWED_HOSTS = ['imran-proj1.herokuapp.com',
+                 'www.imran-proj1.herokuapp.com']
 
 
 INSTALLED_APPS = [
