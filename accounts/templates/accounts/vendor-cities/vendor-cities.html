@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Vendor Cities | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+    <h5>&nbsp;</h5>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Vendor Cities Info</h4>
+            <div class="table-responsive-md">
+            <table id="infoTable" class="display table table-bordered table-hover">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th>ID</th>
+                        <th>City</th>
+                        {% comment %} <th>Purchases</th> {% endcomment %}
+                        {% comment %} <th>Value of Purchases</th> {% endcomment %}
+                        {% comment %} <th>Avg. Purchase Value</th> {% endcomment %}
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                {% for city in cities_info %}
+                    <tr>
+                        <td>{{ city.id }}</td>
+                        <td>{{ city.vendor_city }}</td>
+                        {% comment %} <td>{{ city.purchase_count}}</td> {% endcomment %}
+                        {% comment %} <td>${{ city.purchase_sum |floatformat:2 }}</td> {% endcomment %}
+                        {% comment %} <td>${{ city.aov |floatformat:2}}</td> {% endcomment %}
+                        <td><a href="{% url 'vendor-cities-edit' city.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                        <td><a href="{% url 'vendor-cities-delete' city.id %}""><i class="fas fa-trash-alt icon-delete"></a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            </div>
+            <br>
+            <a href="{% url 'vendor-cities-add' %}"><p class="btn btn-sm bg-dark text-white">Add City</p></a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

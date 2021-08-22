@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Customer Cities | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+
+  <div class="d-flex justify-content-between small">
+      <div><h5 class="mt-4">{{ range }} Customer City Stats:</h5><br></div>
+      <div class="form-group mt-4">
+        <form id="dataperiodform" name="periodform" action="" method="POST" onchange="dataperiodform.submit();">
+          {% csrf_token %}
+          {% comment %} <label for="dataperiod"><h6>Period:</h6></label> {% endcomment %}
+          <select id="dataperiod" name="dataperiod">
+            <option value="">Select Period</option>
+            <option value="all_time">All Time</option>
+            <option value="today">Today</option>
+            <option value="last_7_days">Last 7 Days</option>
+            <option value="last_30_days">Last 30 Days</option>
+            <option value="last_60_days">Last 60 Days</option>
+            <option value="last_90_days">Last 90 Days</option>
+            <option value="current_month">Current Month</option>
+            <option value="current_year">Current Year</option>
+          </select>
+        </form>
+        <br>
+      </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+          <h4 class="text-center text-dark-grey">{{ cities_count }}</h4>
+          <h6 class="text-center text-theme">Total Cities</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">{{ orders_count }}</h4>
+            <h6 class="text-center text-theme">Total Orders</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ orders_sum |floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Total Revenue</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ aov_city |floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Avg Order Value/ City</h6>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>{{ range }} Top 5 Cities:</h5>
+                <table class="mt-20 table table-bordered table-hover">
+                    <thead class="bg-light-grey text-dark">
+                    <tr>
+                        <th>City</th>
+                        <th>Orders</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    {% for city in cities_top_five %}
+                    <tr>
+                        <td>{{ city.customer_city }}</td>
+                        <td>{{ city.ord_count }}</td>
+                        <td>${{ city.ord_sum | floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>{{ range }} Top 5 Cities Chart:</h5>
+                <canvas id="citiesChart" width="100%">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+                <script>
+                  var ctx = document.getElementById("citiesChart");
+                  var citiesChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                      labels: {{ city_labels|safe }},
+                      datasets: [{
+                        data: {{ city_data|safe }},
+                        backgroundColor: ['#1E71F6', '#E61177', '#3CD014', '#AC0EB6', '#F75620'],
+                      }],
+                    },
+                  });
+                </script>
+                </canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h4>{{ range }} Customer Cities Info:</h4>
+        <div class="table-responsive-md">
+          <table id="infoTable" class="display table table-bordered table-hover">
+              <thead class="bg-dark text-white">
+                  <tr>
+                      <th>ID</th>
+                      <th>City</th>
+                      <th>Orders</th>
+                      <th>Value of Orders</th>
+                      <th>Avg. Order Value</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
+                  </tr>
+              </thead>
+              {% for city in cities %}
+                  <tr>
+                      <td>{{ city.id }}</td>
+                      <td>{{ city.customer_city }}</td>
+                      <td>{{ city.ord_count}}</td>
+                      <td>${{ city.ord_sum |floatformat:2 }}</td>
+                      <td>${{ city.aov |floatformat:2}}</td>
+                      <td><a href="{% url 'customer-cities-edit' city.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                      <td><a href="{% url 'customer-cities-delete' city.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                  </tr>
+              {% endfor %}
+          </table>
+        </div>
+        <br>
+        <a href="{% url 'customer-cities-add' %}"><p class="btn btn-sm bg-dark text-white">Add City</p></a>
+    </div>
+</div>
+
+
+
+{% endblock content %}

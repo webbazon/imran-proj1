@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Vendors | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+
+  <div class="d-flex justify-content-between small">
+      <div><h5 class="mt-4">{{ range }} Vendor Stats:</h5><br></div>
+      <div class="form-group mt-4">
+        <form id="dataperiodform" name="periodform" action="" method="POST" onchange="dataperiodform.submit();">
+          {% csrf_token %}
+          {% comment %} <label for="dataperiod"><h6>Period:</h6></label> {% endcomment %}
+          <select id="dataperiod" name="dataperiod">
+            <option value="">Select Period</option>
+            <option value="all_time">All Time</option>
+            <option value="today">Today</option>
+            <option value="last_7_days">Last 7 Days</option>
+            <option value="last_30_days">Last 30 Days</option>
+            <option value="last_60_days">Last 60 Days</option>
+            <option value="last_90_days">Last 90 Days</option>
+            <option value="current_month">Current Month</option>
+            <option value="current_year">Current Year</option>
+          </select>
+        </form>
+        <br>
+      </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+          <h4 class="text-center text-dark-grey">{{ vendors_count }}</h4>
+          <h6 class="text-center text-theme">Total Vendors</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">{{ total_purchases }}</h4>
+            <h6 class="text-center text-theme">Total Purchases</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ purchase_value |floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Total Purchase Value</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ average_purchase_value |floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Avg Value/ Vendor</h6>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>{{ range }} Top 5 Vendors:</h5>
+                <table class="mt-20 table table-bordered table-hover">
+                    <thead class="bg-light-grey text-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>Purchases</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    {% for vendor in vendors_top_five %}
+                    <tr>
+                        <td>{{ vendor.vendor }}</td>
+                        <td>{{ vendor.vendor_city }}</td>
+                        <td>{{ vendor.purchases_count }}</td>
+                        <td>${{ vendor.purchases_sum | floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>{{ range }} Top 5 Vendors Chart:</h5>
+                <canvas id="vendorChart" width="100%">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+                <script>
+                  var ctx = document.getElementById("vendorChart");
+                  var vendorChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                      labels: {{ vendor_labels|safe }},
+                      datasets: [{
+                        label: 'Vendors',
+                        data: {{ vendor_data|safe }},
+                        backgroundColor: ['#C80000', '#630094', '#F7D801', '#0D761E', '#00279C'],
+                      }],
+                    },
+                  });
+                </script>
+                </canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h4>{{ range }} Vendors Info:</h4>
+        <form action="" method="get">
+          {{ myFilter.form }}
+          <button class="btn btn-sm bg-dark text-white" type="submit">Filter</button>
+        </form>
+        <div class="table-responsive-md">
+          <table id="infoTable" class="display table table-bordered table-hover">
+              <thead class="bg-dark text-white">
+                  <tr>
+                      <th>ID</th>
+                      <th>Vendor</th>
+                      <th>City</th>
+                      <th>Category</th>
+                      <th>Purchases</th>
+                      <th>Value</th>
+                      <th>Avg. Value</th>
+                      <th>View</th>
+                      <th>Edit</th>
+                  </tr>
+              </thead>
+              {% for vendor in vendors %}
+                  <tr>
+                      <td>{{ vendor.vendor_id }}</td>
+                      <td>{{ vendor.vendor }}</td>
+                      <td>{{ vendor.vendor_city }}</td>
+                      <td>{{ vendor.products_or_services }}</td>
+                      <td>{{ vendor.purchases_count }}</td>
+                      <td>${{ vendor.purchases_sum|floatformat:2  }}</td>
+                      <td>${{ vendor.apv |floatformat:2 }}</td>
+                      <td><a href="{% url 'vendor' vendor.vendor_id %}"><i class="fas fa-eye icon-view"></a></td>
+                      <td><a href="{% url 'vendors-edit' vendor.vendor_id %}"><i class="fas fa-edit icon-edit"></a></td>
+                  </tr>
+              {% endfor %}
+          </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

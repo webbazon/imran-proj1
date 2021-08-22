@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% load crispy_forms_tags %}
+
+{% block title %}Edit "{{ expense_mode }}" Mode | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<br><br>
+<div class="container-fluid px-4">
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    
+                    <h5>Order Expense Mode Editing Form:</h5>
+                    <form action="" class="forms" method="POST">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="form-group">
+                            <br><br><input type="Submit" class="btn btn-sm bg-dark text-white" value="Save Mode">
+                        </div>
+                    </form>
+                            
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>Other Actions:</h5>
+                    <p class="note">Note: Edit/ Delete actions can be performed through the 'View' page.</p>
+                    <table class="mt-20 table table-hover table-bordered">
+                        <thead class="bg-light-grey text-dark">
+                            <tr>
+                                <th>Module</th>
+                                <th>View</th>
+                                <th>Add</th>
+                                {% comment %} <th>Delete</th> {% endcomment %}
+                            </tr>
+                        </thead>
+                        
+                        <tr>
+                            <td>Company - Employees</td>
+                            <td><a href="{% url 'employee-names' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'employee-names-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        
+                        <tr>
+                            <td>Company - General Expenses</td>
+                            <td><a href="{% url 'expenses-general' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'expenses-general-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Company - Expense Categories</td>
+                            <td><a href="{% url 'expense-categories-general' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'expense-categories-general-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Company - Expense Modes</td>
+                            <td><a href="{% url 'expense-modes-general' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'expense-modes-general-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Orders</td>
+                            <td><a href="{% url 'orders' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'orders-create' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Orders - Delivery Status</td>
+                            <td><a href="{% url 'delivery-status' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'delivery-status-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Orders - Payment Terms</td>
+                            <td><a href="{% url 'payment-terms' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'payment-terms-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Orders - Payment Status</td>
+                            <td><a href="{% url 'payment-status' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'payment-status-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Orders - Expenses</td>
+                            <td><a href="{% url 'expenses-orders' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td>On Order Page</td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Orders - Expense Categories</td>
+                            <td><a href="{% url 'expense-categories-orders' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'expense-categories-orders-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Orders - Expense Modes</td>
+                            <td><a href="{% url 'expense-modes-orders' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'expense-modes-orders-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Orders - Received Payments</td>
+                            <td><a href="{% url 'payment-receipts' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td>On Order Page</td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Orders - Payment Modes</td>
+                            <td><a href="{% url 'payment-modes' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'payment-modes-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Customers</td>
+                            <td><a href="{% url 'customers' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'customers-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Customers - Cities</td>
+                            <td><a href="{% url 'customer-cities' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'customer-cities-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Vendors</td>
+                            <td><a href="{% url 'vendors' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'vendors-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <td>Vendors - Cities</td>
+                            <td><a href="{% url 'vendor-cities' %}"><i class="fas fa-eye icon-view"></a></td>
+                            <td><a href="{% url 'vendor-cities-add' %}"><i class="fas fa-plus icon-add"></a></td>
+                            {% comment %} <td><a href="#"><i class="fas fa-trash-alt icon-delete"></a></td> {% endcomment %}
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

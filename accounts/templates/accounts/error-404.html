@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Not Found | Dummy Inc {% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+    <br><h5>&nbsp;</h5>
+    <div class="row">
+        <div class="col-xl-12 bg-white card-shadow">
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="card plain mb-4">
+                        <div class="card-body">
+                            <h5 class="text-danger" style="text-decoration: underline;">Page Not Found</h5>
+                            <br>
+                            <p>Hey! It seems you're lost. The page you were trying to find doesn't seem to exist.</p>
+                            <p>I suggest you to visit the <a href="{% url 'index' %}">Home Page</a> and start again from there.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="card plain mb-4">
+                        <div class="card-body">
+                            <img src="{% static 'images/404.png' %}" alt=" " width="40%">
+                        </div>
+                    </div>
+                </diV>
+            </div>
+        </diV>
+    </div>
+</div>
+
+
+{% endblock content %}

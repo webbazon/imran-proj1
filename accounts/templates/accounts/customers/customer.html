@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Customer "{{ customer.customer }}" | Dummy Inc.{% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+    <h5 class="mt-4 text-theme">Customer Ref# {{ customer.customer_id }} Details</h5><br>
+  <div class="row">
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+          <h4 class="text-center text-dark-grey">{{ customer.customer }}</h4>
+          <h6 class="text-center text-theme">Customer Name</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">{{ customer.customer_address }}</h4>
+            <h6 class="text-center text-theme">Customer Address</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">{{ customer.customer_city }}</h4>
+            <h6 class="text-center text-theme">Customer City</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <a href="{% url 'customers-edit' customer.customer_id %}"><h6 class="btn btn-single bg-dark text-white">Edit Customer</h6></a>
+            <a href="{% url 'customers-delete' customer.customer_id %}"><h6 class="btn btn-single bg-danger text-white">Delete Customer</h6></a>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+          <h5 class="text-center text-dark-grey">{{ customer.contact_person }}</h5>
+          <h6 class="text-center text-theme">Contact Person</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h5 class="text-center text-dark-grey">{{ customer.designation }}</h5>
+            <h6 class="text-center text-theme">Designation</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h5 class="text-center text-dark-grey">{{ customer.email }}</h5>
+            <h6 class="text-center text-theme">Email ID</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h5 class="text-center text-dark-grey">{{ customer.phone }}</h5>
+            <h6 class="text-center text-theme">Phone/ Mobile</h6>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Financial Summary</h5>
+                <table class="mt-20 table table-bordered table-hover">
+                    <thead class="bg-light-grey text-dark">
+                    <tr>
+                        <th>Orders</th>
+                        <th>Value</th>
+                        <th>Avg. Order Value</th>
+                        <th>Share in Total Revenue</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td>{{ orders_count }}</td>
+                        <td>${{ orders_sum |floatformat:2 }}</td>
+                        <td>${{ average_order_value |floatformat:2 }}</td>
+                        <td>{{ percentage_share |floatformat:2 }} %</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Orders History</h5>
+                <table class="mt-20 table table-hover table-bordered">
+                    <thead class="bg-light-grey text-dark">
+                    <tr>
+                        <th>First Order</th>
+                        <th>Last Order</th>
+                        <th>Time Since Last Order</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td>{{ customer_first_order.first_order_date }}</td>
+                        <td>{{ customer_last_order.last_order_date }}</td>
+                        <td>{{ customer_last_order.last_order_date|timesince }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Orders from {{ customer.customer }}, {{ customer.customer_city }}:</h5>
+        <div class="table-responsive-md">
+          <table id="infoTable" class="display table table-bordered table-hover">
+              <thead class="bg-dark text-white">
+                  <tr>
+                      <th>PO#</th>
+                      <th>Date</th>
+                      <th>Value</th>
+                      <th>Details</th>
+                      <th>Due</th>
+                      <th>Delivery</th>
+                      <th>Invoice</th>
+                      <th>Pay Term</th>
+                      <th>Status</th>
+                      <th>View</th>
+                  </tr>
+              </thead>
+              {% for order in orders %}
+                <tr>
+                    <td>{{ order.order_ref }}</td>
+                    <td>{{ order.order_date }}</td>
+                    <td>${{ order.value | floatformat:2}}</td>
+                    <td>{{ order.description }}</td>
+                    <td>{{ order.due_date }}</td>
+                    <td>{{ order.delivery_status }}</td>
+                    <td>{{ order.invoice_details }}</td>
+                    <td>{{ order.payment_terms }}</td>
+                    <td>{{ order.payment_status }}</td>
+                    <td><a href="{% url 'order' order.order_ref %}"><i class="fas fa-eye icon-view"></a></td>
+                </tr>
+            {% endfor %}
+          </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

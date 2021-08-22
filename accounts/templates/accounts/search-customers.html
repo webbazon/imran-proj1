@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Search Results | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<br><br>
+<div class="container-fluid px-4">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    {% if searched %}
+                        <h5>You Searched For <span style="color: #005BC1;">"{{ searched }}" </span>:</h5>
+                        <br>
+                            <div class="table-responsive-md">
+                                <table id="infoTable" class="display table table-bordered table-hover">
+                                    <thead class="bg-dark text-white">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Customer</th>
+                                            <th>City</th>
+                                            <th>View</th>
+                                            <th>Edit</th>
+                                        </tr>
+                                    </thead>
+                                    {% for customer in customers %}
+                                        <tr>
+                                            <td>{{ customer.customer_id }}</td>
+                                            <td>{{ customer.customer }}</td>
+                                            <td>{{ customer.customer_city }}</td>
+                                            <td><a href="{% url 'customer' customer.customer_id %}"><i class="fas fa-eye icon-view"></a></td>
+                                            <td><a href="{% url 'customers-edit' customer.customer_id %}"><i class="fas fa-edit icon-edit"></a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                    {% else %}
+                        <h5>Hey! You forgot to type in a search parameter!</h5>
+                        <img src="{% static 'images/search.png' %}" alt=" " width="25%">
+                        <h6>Type in something before clicking the search icon (unless you want to see me again)<h6>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

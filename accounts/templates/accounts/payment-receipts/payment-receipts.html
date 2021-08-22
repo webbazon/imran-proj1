@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Payment Receipts | Dummy Inc.{% endblock title %} 
+
+{% block content %}
+
+
+<div class="container-fluid px-4">
+
+    <div class="d-flex justify-content-between small">
+        <div><h5 class="mt-4">{{ range }} Received Payments:</h5><br></div>
+        <div class="form-group mt-4">
+            <form id="dataperiodform" name="periodform" action="" method="POST" onchange="dataperiodform.submit();">
+            {% csrf_token %}
+            {% comment %} <label for="dataperiod"><h6>Period:</h6></label> {% endcomment %}
+            <select id="dataperiod" name="dataperiod">
+                <option value="">Select Period</option>
+                <option value="all_time">All Time</option>
+                <option value="today">Today</option>
+                <option value="last_7_days">Last 7 Days</option>
+                <option value="last_30_days">Last 30 Days</option>
+                <option value="last_60_days">Last 60 Days</option>
+                <option value="last_90_days">Last 90 Days</option>
+                <option value="current_month">Current Month</option>
+                <option value="current_year">Current Year</option>
+            </select>
+            </form>
+            <br>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>{{ range }} Payment Status:</h5>
+                    <canvas id="statusChart" width="100%">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+                    <script>
+                    var ctx = document.getElementById("statusChart");
+                    var statusChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                        labels: {{ payment_labels|safe }},
+                        datasets: [{
+                            label: 'Payment Status',
+                            data: {{ payment_data|safe }},
+                            backgroundColor: ['#F40000', '#7C007C', '#185B49', '#870E38', '#F7E100', '#010BE4', '#FF6100', '#C73EF7', '#DE139E', '#00B526', ],
+                        }],
+                        },
+                    });
+                    </script>
+                    </canvas>
+                    <div class="table-responsive-md">
+                    <table id="infoTable" class="display table table-bordered table-hover">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                {% comment %} <th>ID</th> {% endcomment %}
+                                <th>Status</th>
+                                <th>Instances</th>
+                                <th>Amount</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        {% for status in payments_status %}
+                            <tr>
+                                <td>{{ status.payment_status }}</td>
+                                <td>{{ status.pay_stat_count }}</td>
+                                <td>${{ status.pay_stat_sum |floatformat:2 }}</td>
+                                <td><a href="{% url 'payment-status-edit' status.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                                <td><a href="{% url 'payment-status-delete' status.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <br>
+                <a href="{% url 'payment-status-add' %}"><p class="btn btn-sm bg-dark text-white">Add Payment Status</p></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>{{ range }} Payment Terms:</h5>
+                    <canvas id="termsChart" width="100%">
+                    <script>
+                    var ctx = document.getElementById("termsChart");
+                    var termsChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                        labels: {{ term_labels|safe }},
+                        datasets: [{
+                            data: {{ term_data|safe }},
+                            backgroundColor: ['#0A48DB', '#CC1C88', '#FCD300', '#93BF42', '#E9481C', '#A602AD', '#3A56F7', '#D11802', '#00A800', '#9A05BF', ],
+                        }],
+                        },
+                    });
+                    </script>
+                    </canvas>
+                    <div class="table-responsive-md">
+                    <table id="infoTable" class="display table table-bordered table-hover">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                {% comment %} <th>ID</th> {% endcomment %}
+                                <th>Payment Term</th>
+                                <th>Instances</th>
+                                <th>Amount</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        {% for term in pay_terms %}
+                            <tr>
+                                <td>{{ term.payment_terms }}</td>
+                                <td>{{ term.pay_term_count }}</td>
+                                <td>${{ term.pay_term_sum |floatformat:2 }}</td>
+                                <td><a href="{% url 'payment-terms-edit' term.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                                <td><a href="{% url 'payment-terms-delete' term.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <br>
+                <a href="{% url 'payment-terms-add' %}"><p class="btn btn-sm bg-dark text-white">Add Expense Mode</p></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="card mb4">
+    <div class="card-body">
+        <h4>{{ range }} Received Payment Details:</h4>
+        <form action="" method="get">
+          {{ myFilter.form }}
+          <button class="btn btn-sm bg-dark text-white" type="submit">Filter</button>
+        </form>
+        <div class="table-responsive-md">
+            <table id="infoTable" class="display table table-bordered table-hover">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Order#</th>
+                        <th>Invoice</th>
+                        <th>Amount</th>
+                        <th>Mode</th>
+                        <th>Remarks</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                {% for payment in received_payments %}
+                    <tr>
+                        <td>{{ payment.id }}</td>
+                        <td>{{ payment.payment_received_date }}</td>
+                        <td>{{ payment.customer }}</td>
+                        <td>{{ payment.order_ref }}</td>
+                        <td>{{ payment.invoice_ref }}</td>
+                        <td>${{ payment.received_amount |floatformat:2 }}</td>
+                        <td>{{ payment.payment_mode }}</td>
+                        <td>{{ payment.notes_or_remarks }}</td>
+                        <td><a href="{% url 'payment-receipts-edit' payment.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                        <td><a href="{% url 'payment-receipts-delete' payment.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+{% endblock content %}

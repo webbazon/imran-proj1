@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Order# {{ order.order_ref }} | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+  <h5 class="mt-4">Order for {{ order.description }}</h5><br>
+  <div class="row">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">{{ order.order_ref }}</h4>
+            <h6 class="text-center text-dark-grey">dtd {{ order.order_date }}</h6>
+            <h6 class="text-center text-theme">Order Ref#</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <a style="text-decoration: none;" href="{% url 'customer' order.customer.customer_id %}"><h4 class="text-center text-dark-grey">{{ order.customer }}</h4></a>
+            <h6 class="text-center text-dark-grey">{{ order.customer_city }}</h6>
+            <a style="text-decoration: none;" href="{% url 'customer' order.customer.customer_id %}"><h6 class="text-center text-theme">Customer Details</h6></a>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ order.value | floatformat:2 }}</h4>
+            <h6 class="text-center text-dark-grey">&nbsp;</h6>
+            <h6 class="text-center text-theme">Order Value</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            {% comment %} <h6 class="text-center text-light-grey">Order Actions</h6> {% endcomment %}
+            <a href="{% url 'orders-edit' order.order_ref %}"><h6 class="btn btn-single bg-dark text-white">Edit Order</h6></a>
+            <a href="{% url 'orders-delete' order.order_ref %}"><h6 class="btn btn-single bg-danger text-white">Delete Order</h6></a>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ order.value | floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Order Value</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ total_expenses | floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Order Expenses</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ order_profit | floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Order Profit</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">{{ profit_percentage | floatformat:2 }} %</h4>
+            <h6 class="text-center text-theme">Profit Percentage</h6>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-6 col-md-6">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+          <h5 class="text-center">Profit Details</h5><br>
+            <canvas id="profitChart" width="100%">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+                <script>
+                  var ctx = document.getElementById("profitChart");
+                  var profitChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                      labels: {{ profit_labels|safe }},
+                      datasets: [{
+                        data: {{ profit_data|safe }},
+                        backgroundColor: ['#DC3545', '#005BC1', '#E2BE68', '#630094', '#F7D801', '#C80000', '#0D761E', '#00279C'],
+                      }],
+                    },
+                  });
+                </script>
+            </canvas> 
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-xl-6 col-md-6">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            {% comment %} <canvas id="expenseChart" width="100%">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+                <script>
+                  var ctx = document.getElementById("expenseChart");
+                  var expenseChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                      labels: {{ expense_labels|safe }},
+                      datasets: [{
+                        data: {{ expense_data|safe }},
+                        backgroundColor: ['#F40000', '#7C007C', '#185B49', '#870E38', '#F7E100', '#010BE4', '#FF6100', '#C73EF7', '#DE139E', '#00B526', ],
+                      }],
+                    },
+                  });
+                </script>
+            </canvas> {% endcomment %}
+            <h5 class="text-center">Expenses Break-up</h5><br>
+            <table class="mt-20 table table-hover table-bordered">
+              <thead>
+                <tr class="bg-light-grey text-dark">
+                  <th>Expense Category</th>
+                  <th>Amount Spent</th>
+                </tr>
+              </thead>
+                {% for exp in expdata %}
+                  <tr>
+                    <td>{{ exp.expense_category }}</td>
+                    <td>${{ exp.expense_amount |floatformat:2 }}<br></td>
+                  </tr>
+                {% endfor %}
+            </table>
+            </br><p class="note">*Note: View the 'Expense Details' table at the bottom of the page for complete details</p>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Delivery Overview</h5>
+                <table class="mt-20 table table-bordered table-hover">
+                    <thead class="bg-light-grey text-dark">
+                    <tr>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Invoice Details</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td>{{ order.due_date }}</td>
+                        <td>{{ order.delivery_status }}</td>
+                        <td>{{ order.invoice_details }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Payment Overview</h5>
+                <table class="mt-20 table table-hover table-bordered">
+                    <thead class="bg-light-grey text-dark">
+                    <tr>
+                        <th>Terms</th>
+                        <th>Status</th>
+                        <th>Received</th>
+                        <th>Pending</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td>{{  order.payment_terms }}</td>
+                        <td>{{  order.payment_status }}</td>
+                        <td>${{ received_amount | floatformat:2 }}</td>
+                        <td>${{ pending_amount | floatformat:2 }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Received Payment Details</h5>
+                <div class="table-responsive-md">
+                  <table id="infoTable" class="display mt-20 table table-hover table-bordered">
+                      <thead class="bg-dark text-white">
+                          <tr>
+                              <th>ID</th>
+                              <th>Date</th>
+                              <th>Amount</th>
+                              <th>Mode</th>
+                              <th>Invoice</th>
+                              <th>Notes</th>
+                              <th>Edit</th>
+                              <th>Delete</th>
+                          </tr>
+                      </thead>
+                      {% for payment in paydata %}
+                          <tr>
+                              <td>{{ payment.id }}</td>
+                              <td>{{ payment.payment_received_date }}</td>
+                              <td>${{ payment.received_amount |floatformat:2 }}</td>
+                              <td>{{ payment.payment_mode }}</td>
+                              <td>{{ payment.invoice_ref }}</td>
+                              <td>{{ payment.notes_or_remarks }}</td>
+                              <td><a href="{% url 'payment-receipts-edit' payment.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                              <td><a href="{% url 'payment-receipts-delete' payment.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                          </tr>
+                      {% endfor %}
+                  </table>
+                </div>
+                <br>
+                <a href="{% url 'payment-receipts-add' order.order_ref %}"><p class="btn btn-sm bg-dark text-white">Add Payment</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Expense Details</h5>
+                <div class="table-responsive-md">
+                  <table id="infoTable" class="display mt-20 table table-hover table-bordered">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Vendor</th>
+                            <th>Category</th>
+                            <th>Details</th>
+                            <th>Mode</th>
+                            <th>Ref#</th>
+                            {% comment %} <th>Paid By</th> {% endcomment %}
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    {% for expense in order_expenses %}
+                        <tr>
+                            <td>{{ expense.id }}</td>
+                            <td>{{ expense.expense_date }}</td>
+                            <td>${{ expense.expense_amount |floatformat:2 }}</td>
+                            <td>{{ expense.vendor }}</td>
+                            <td>{{ expense.expense_category }}</td>
+                            <td>{{ expense.description }}</td>
+                            <td>{{ expense.expense_mode }}</td>
+                            <td>{{ expense.notes_or_remarks }}</td>
+                            {% comment %} <td>{{ expense.expense_made_by }}</td> {% endcomment %}
+                            <td><a href="{% url 'expenses-orders-edit' expense.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                            <td><a href="{% url 'expenses-orders-delete' expense.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                        </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+                <br>
+                <a href="{% url 'expenses-orders-add' order.order_ref %}"><p class="btn btn-sm bg-dark text-white">Add Expense</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

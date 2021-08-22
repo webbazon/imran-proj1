@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Customers | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+
+<div class="container-fluid px-4">
+
+  <div class="d-flex justify-content-between small">
+      <div><h5 class="mt-4">{{ range }} Customer Stats:</h5><br></div>
+      <div class="form-group mt-4">
+        <form id="dataperiodform" name="periodform" action="" method="POST" onchange="dataperiodform.submit();">
+          {% csrf_token %}
+          {% comment %} <label for="dataperiod"><h6>Period:</h6></label> {% endcomment %}
+          <select id="dataperiod" name="dataperiod">
+            <option value="">Select Period</option>
+            <option value="all_time">All Time</option>
+            <option value="today">Today</option>
+            <option value="last_7_days">Last 7 Days</option>
+            <option value="last_30_days">Last 30 Days</option>
+            <option value="last_60_days">Last 60 Days</option>
+            <option value="last_90_days">Last 90 Days</option>
+            <option value="current_month">Current Month</option>
+            <option value="current_year">Current Year</option>
+          </select>
+        </form>
+        <br>
+      </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+          <h4 class="text-center text-dark-grey">{{ customers_count }}</h4>
+          <h6 class="text-center text-theme">Total Customers</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">{{ orders_count }}</h4>
+            <h6 class="text-center text-theme">Total Orders</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ orders_sum |floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Total Revenue</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ aov_customer |floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Avg Order Value/ Customer</h6>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            {% comment %} <div class="card-header bg-dark text-white">
+                <i class="fas fa-user-tie me-1"></i>
+                Top 5 Customers
+            </div> {% endcomment %}
+            <div class="card-body">
+                <h5>{{ range }} Top 5 Customers:</h5>
+                <canvas id="customerChart" width="100%">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+                <script>
+                  var ctx = document.getElementById("customerChart");
+                  var customerChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                      labels: {{ customer_labels|safe }},
+                      datasets: [{
+                        label: 'Customers',
+                        data: {{ customer_data|safe }},
+                        backgroundColor: ['#C80000', '#630094', '#F7D801', '#0D761E', '#00279C'],
+                      }],
+                    },
+                  });
+                </script>
+                </canvas>
+                <table class="mt-20 table table-bordered table-hover">
+                    <thead class="bg-light-grey text-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>Orders</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    {% for customer in customers_top_five %}
+                    <tr>
+                        <td>{{ customer.customer }}</td>
+                        <td>{{ customer.customer_city }}</td>
+                        <td>{{ customer.orders_count }}</td>
+                        <td>${{ customer.orders_sum | floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            {% comment %} <div class="card-header bg-dark text-white">
+                <i class="fas fa-globe me-1"></i>
+                Top 5 Cities
+            </div> {% endcomment %}
+            <div class="card-body">
+                <h5>{{ range }} Top 5 Cities:</h5>
+                <canvas id="cityChart" width="100%">
+                <script>
+                  var ctx = document.getElementById("cityChart");
+                  var cityChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                      labels: {{ city_labels|safe }},
+                      datasets: [{
+                        data: {{ city_data|safe }},
+                        backgroundColor: ['#1E71F6', '#E61177', '#3CD014', '#AC0EB6', '#F75620'],
+                      }],
+                    },
+                  });
+                </script>
+                </canvas>
+                <table class="mt-20 table table-hover table-bordered">
+                    <thead class="bg-light-grey text-dark">
+                    <tr>
+                        <th>City</th>
+                        <th>Orders</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    {% for city in cities_top_five %}
+                    <tr>
+                        <td>{{ city.customer_city }}</td>
+                        <td>{{ city.ord_count }}</td>
+                        <td>${{ city.ord_sum | floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h4>Customers Info</h4>
+        <form action="" method="get">
+          {{ myFilter.form }}
+          <button class="btn btn-sm bg-dark text-white" type="submit">Filter</button>
+        </form>
+        <div class="table-responsive-md">
+          <table id="infoTable" class="display table table-bordered table-hover">
+              <thead class="bg-dark text-white">
+                  <tr>
+                      <th>ID</th>
+                      <th>Customer Name</th>
+                      <th>City</th>
+                      <th>Orders</th>
+                      <th>Value of Orders</th>
+                      <th>Avg. Order Value</th>
+                      <th>View</th>
+                      <th>Edit</th>
+                  </tr>
+              </thead>
+              {% for customer in customers_info %}
+                  <tr>
+                      <td>{{ customer.customer_id }}</td>
+                      <td>{{ customer.customer }}</td>
+                      <td>{{ customer.customer_city }}</td>
+                      <td>{{ customer.orders_count}}</td>
+                      <td>${{ customer.orders_sum |floatformat:2 }}</td>
+                      <td>${{ customer.aov |floatformat:2}}</td>
+                      <td><a href="{% url 'customer' customer.customer_id %}"><i class="fas fa-eye icon-view"></a></td>
+                      <td><a href="{% url 'customers-edit' customer.customer_id %}"><i class="fas fa-edit icon-edit"></a></td>
+                  </tr>
+              {% endfor %}
+          </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

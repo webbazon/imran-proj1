@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Order Expenses | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+
+  <div class="d-flex justify-content-between small">
+      <div><h5 class="mt-4">{{ range }} Stats:</h5><br></div>
+      <div class="form-group mt-4">
+        <form id="dataperiodform" name="periodform" action="" method="POST" onchange="dataperiodform.submit();">
+          {% csrf_token %}
+          {% comment %} <label for="dataperiod"><h6>Period:</h6></label> {% endcomment %}
+          <select id="dataperiod" name="dataperiod">
+            <option value="">Select Period</option>
+            <option value="all_time">All Time</option>
+            <option value="today">Today</option>
+            <option value="last_7_days">Last 7 Days</option>
+            <option value="last_30_days">Last 30 Days</option>
+            <option value="last_60_days">Last 60 Days</option>
+            <option value="last_90_days">Last 90 Days</option>
+            <option value="current_month">Current Month</option>
+            <option value="current_year">Current Year</option>
+          </select>
+        </form>
+        <br>
+      </div>
+  </div>
+
+
+
+  <div class="row">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+          <h4 class="text-center text-dark-grey">{{ customers_count }}</h4>
+          <h6 class="text-center text-theme">Total Customers</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">{{ orders_count }}</h4>
+            <h6 class="text-center text-theme">Total Orders</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ orders_sum |floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Total Revenue</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ average_order_value |floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Average Order Value</h6>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="row">
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card bg-white text-dark mb-4">
+      <div class="card-body">
+          <h4 class="text-center text-dark-grey">${{ orders_expenses |floatformat:0 }}</h4>
+          <h6 class="text-center text-theme">Order Expenses</h6>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card bg-white text-dark mb-4">
+      <div class="card-body">
+          <h4 class="text-center text-dark-grey">${{ gross_profit |floatformat:2 }} <span class="badge bg-dark text-white font-weight-medium badge-pill small-text"> ({{ gross_profit_percentage |floatformat:2 }}%) </span></h4>
+          <h6 class="text-center text-theme">Gross Profit</h6>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card bg-white text-dark mb-4">
+      <div class="card-body">
+          <h4 class="text-center text-dark-grey">${{ other_expenses |floatformat:2 }}</h4>
+          <h6 class="text-center text-theme">General Expenses</h6>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card bg-white text-dark mb-4">
+      <div class="card-body">
+          <h4 class="text-center text-dark-grey">${{ net_profit |floatformat:0 }} <span class="badge bg-dark text-white font-weight-medium badge-pill small-text">({{ net_profit_percentage |floatformat:2 }}%) </span></h4>
+          <h6 class="text-center text-theme">Net Profit</h6>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>{{ range }} Expense Categories:</h5>
+                <canvas id="categoriesChart" width="100%">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+                <script>
+                  var ctx = document.getElementById("categoriesChart");
+                  var categoriesChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                      labels: {{ category_labels|safe }},
+                      datasets: [{
+                        label: 'Categories',
+                        data: {{ category_data|safe }},
+                        backgroundColor: ['#F40000', '#7C007C', '#185B49', '#870E38', '#F7E100', '#010BE4', '#FF6100', '#C73EF7', '#DE139E', '#00B526', ],
+                      }],
+                    },
+                  });
+                </script>
+                </canvas>
+                <div class="table-responsive-md">
+                <table id="infoTable" class="display table table-bordered table-hover">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            {% comment %} <th>ID</th> {% endcomment %}
+                            <th>Category</th>
+                            <th>Instances</th>
+                            <th>Amount</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    {% for expense in expenses_category %}
+                        <tr>
+                            {% comment %} <td>{{ expense.id }}</td> {% endcomment %}
+                            <td>{{ expense.order_expense_category }}</td>
+                            <td>{{ expense.cat_count}}</td>
+                            <td>${{ expense.cat_sum |floatformat:2}}</td>
+                            <td><a href="{% url 'expense-categories-orders-edit' expense.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                            <td><a href="{% url 'expense-categories-orders-delete' expense.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <br>
+            <a href="{% url 'expense-categories-orders-add' %}"><p class="btn btn-sm bg-dark text-white">Add Expense Category</p></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>{{ range }} Expense Modes:</h5>
+                <canvas id="modesChart" width="100%">
+                <script>
+                  var ctx = document.getElementById("modesChart");
+                  var modesChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                      labels: {{ mode_labels|safe }},
+                      datasets: [{
+                        data: {{ mode_data|safe }},
+                        backgroundColor: ['#0A48DB', '#CC1C88', '#FCD300', '#93BF42', '#E9481C', '#A602AD', '#3A56F7', '#D11802', '#00A800', '#9A05BF', ],
+                      }],
+                    },
+                  });
+                </script>
+                </canvas>
+                <div class="table-responsive-md">
+                <table id="infoTable" class="display table table-bordered table-hover">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>Mode</th>
+                            <th>Instances</th>
+                            <th>Amount</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    {% for mode in expenses_mode %}
+                        <tr>
+                            <td>{{ mode.order_expense_mode }}</td>
+                            <td>{{ mode.mode_count}}</td>
+                            <td>${{ mode.mode_sum |floatformat:2}}</td>
+                            <td><a href="{% url 'expense-modes-orders-edit' mode.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                            <td><a href="{% url 'expense-modes-orders-delete' mode.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <br>
+            <a href="{% url 'expense-modes-orders-add' %}"><p class="btn btn-sm bg-dark text-white">Add Expense Mode</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card mb4">
+    <div class="card-body">
+        <h4>{{ range }} Expense Details:</h4>
+        <form action="" method="get">
+          {{ myFilter.form }}
+          <button class="btn btn-sm bg-dark text-white" type="submit">Filter</button>
+        </form>
+        <div class="table-responsive-md">
+            <table id="infoTable" class="display table table-bordered table-hover">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Vendor</th>
+                        <th>Order#</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Details</th>
+                        <th>Mode</th>
+                        <th>Made By</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                {% for expense in order_expenses %}
+                    <tr>
+                        <td>{{ expense.id }}</td>
+                        <td>{{ expense.expense_date }}</td>
+                        <td>{{ expense.vendor }}</td>
+                        <td>{{ expense.order_ref }}</td>
+                        <td>{{ expense.expense_amount }}</td>
+                        <td>{{ expense.expense_category }}</td>
+                        <td>{{ expense.description }}</td>
+                        <td>{{ expense.expense_mode }}</td>
+                        <td>{{ expense.expense_made_by }}</td>
+                        <td><a href="{% url 'expenses-orders-edit' expense.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                        <td><a href="{% url 'expenses-orders-delete' expense.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

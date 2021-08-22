@@ -1,0 +1,333 @@
+body {
+    font-family: 'Amiko', sans-serif;
+    background-color: #f9fbfd;
+    font-size: 14px;
+}
+
+select#dataperiod {
+    word-wrap: normal;
+    background-color: white !important;
+    padding: 5px !important;
+    font-size: 1.1em !important;
+}
+
+.mt-8 {
+    margin-top: 8em !important;
+}
+
+.input-group-text {
+    padding: 0.65rem 0.75rem !important;
+    color: #FFFFFF !important;
+    background-color: #005BC1 !important;
+    border: 1px solid #005BC1 !important;
+    border-radius: 0.25rem 0 0 0.35rem !important;
+}
+
+.btn-login {
+    width: 100% !important;
+    margin-top: 20px !important;
+}
+
+.bg-second {
+    background-color: #E2BE68;
+}
+
+.bg-light-grey {
+    background-color: #F2F2F2 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-weight: 700;
+    color: #1c2d41;
+    color: #272F38 !important;
+}
+
+h4 {
+    font-size: 22px !important;
+}
+
+h6 {
+    font-weight: 700;
+    font-size: 15px !important;
+}
+
+.ui-widget.ui-widget-content {
+    z-index: 999999999999 !important;
+    background-color: #005BC1 !important;
+    color: #FFFFFF !important
+}
+
+.text-light-grey {
+    color: #9eabc0;
+    color: #C6C6C6;
+    color: #D2D2D2 !important;
+}
+
+.text-dark-grey {
+    color: #1c2d41;
+}
+
+.text-theme {
+    color: #005BC1 !important;
+}
+
+.small-text {
+    font-size: 12px !important;
+}
+
+
+.mt-20 {
+    margin-top: 20px !important;
+}
+
+/*Edit/ Delete Buttons on Single Order Page*/
+.btn.btn-single {
+    width: 100% !important;
+    border-radius: 0px !important;
+}
+
+/* Cancel/ Confirm Buttons on Model Form Pages*/
+.btn.btn-form {
+    border-radius: 0px !important;
+    margin: 10px 20px 10px 0px !important;
+    padding: 6px 24px !important;
+}
+
+
+/*Top Nav*/
+.bg-dark {
+    background-color: #005bc1 !important;
+}
+
+
+/*Branding - Site Title*/
+.sb-topnav .navbar-brand {
+    color: #FFFFFF;
+}
+
+
+/*Menu Toggle Button*/
+.sb-topnav.navbar-dark #sidebarToggle {
+    color: #FFFFFF;
+}
+
+
+/*Top Nav Search Bar*/
+.form-control,
+.dataTable-input {
+    font-size: 14px;
+    line-height: 1;
+    padding: 0.2rem 0.5rem;
+}
+
+#btnNavbarSearch {
+    background-color: #E2BE68;
+    border-color: #E2BE68;
+}
+
+
+/*Top Nav - logout Section*/
+.navbar-dark .navbar-nav .nav-link {
+    color: #FFFFFF;
+}
+
+.dropdown-item {
+    font-size: 13px;
+}
+
+
+/*Side Nav*/
+.sb-sidenav-dark {
+    background-color: #005bc1 !important;
+}
+
+
+/*Side Nav Section Titles*/
+.sb-sidenav .sb-sidenav-menu .nav .sb-sidenav-menu-heading {
+    font-weight: 700 !important;
+    padding: 1.75rem 1rem 0.5rem 0.75rem;
+}
+
+.sb-sidenav-dark .sb-sidenav-menu .sb-sidenav-menu-heading {
+    color: #E2BE68;
+}
+
+
+
+/*Sidenav Menu Titles*/
+.sb-sidenav .sb-sidenav-menu .nav .nav-link {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+}
+
+.sb-sidenav-dark .sb-sidenav-menu .nav-link {
+    color: #FFFFFF;
+}
+
+.sb-sidenav-dark .sb-sidenav-menu .nav-link:hover {
+    background-color: #E2BE68;
+}
+
+.sb-sidenav-dark .sb-sidenav-menu .nav-link .sb-nav-link-icon {
+    color: #FFFFFF;
+}
+
+.sb-sidenav-dark .sb-sidenav-menu .nav-link .sb-sidenav-collapse-arrow {
+    color: #FFFFFF;
+}
+
+.nav-link.active {
+    background-color: #E2BE68 !important;
+}
+
+/*Sidenav Footer*/
+.sb-sidenav-dark .sb-sidenav-footer {
+    background-color: #E2BE68;
+    color: #FFFFFF;
+}
+
+
+/*Bootstrap Cards*/
+.card {
+    box-shadow: 0 3px 9px 0 rgba(169, 184, 200, .15) !important;
+    -webkit-box-shadow: 0 3px 9px 0 rgba(169, 184, 200, .15) !important;
+    -moz-box-shadow: 0 3px 9px 0 rgba(169, 184, 200, .15) !important;
+    border: none !important;
+    border-radius: 15px;
+    padding: 12px 6px;
+}
+
+
+.card-header {
+    background-color: #FFFFFF !important;
+    border: none !important;
+}
+
+.card-login {
+    box-shadow: 0 12px 18px 0 rgba(50, 50, 50, .80) !important;
+    -webkit-box-shadow: 0 12px 18px 0 rgba(50, 50, 50, .80) !important;
+    -moz-box-shadow: 0 12px 18px 0 rgba(50, 50, 50, .80) !important;
+    border: none !important;
+    border-radius: 15px;
+    padding: 12px 6px;
+    display: block !important;
+    margin: 30% auto !important;
+}
+
+
+.card.plain {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    border: none !important;
+    border-radius: 15px;
+    padding: 12px 6px;
+}
+
+.card-shadow {
+    box-shadow: 0 3px 9px 0 rgba(169, 184, 200, .15) !important;
+    -webkit-box-shadow: 0 3px 9px 0 rgba(169, 184, 200, .15) !important;
+    -moz-box-shadow: 0 3px 9px 0 rgba(169, 184, 200, .15) !important;
+    border: none !important;
+    border-radius: 15px;
+    padding: 12px 6px;
+}
+
+.note {
+    font-size: 12px !important;
+    font-style: italic !important;
+}
+
+/*Export Buttons*/
+/* .dt-button.buttons-copy.buttons-html5{
+    background: #584D0F !important;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    padding: 0.5em 0.5em !important;
+} */
+.dt-button.buttons-csv.buttons-html5 {
+    background: #D5006F !important;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    padding: 0.5em 0.5em !important;
+}
+
+.dt-button.buttons-excel.buttons-html5 {
+    background: #026E39 !important;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    padding: 0.5em 0.5em !important;
+}
+
+.dt-button.buttons-pdf.buttons-html5 {
+    background: #B40401 !important;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    padding: 0.5em 0.5em !important;
+}
+
+.dt-button.buttons-print {
+    background: #55036e !important;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    padding: 0.5em 0.5em !important;
+}
+
+div.dt-buttons {
+    margin-top: 20px !important;
+}
+
+/*Data Tables*/
+.table {
+    border: 1px solid #dddddd !important;
+    text-align: center !important;
+}
+
+thead.bg-black.text-white {
+    background: #262626 !important;
+    color: #ffffff !important;
+}
+
+
+/*Crispy Forms Styling*/
+.form-control,
+.dataTable-input {
+    font-size: 14px;
+    line-height: 1.2;
+    padding: 0.5rem 0.5rem;
+}
+
+.forms-container {
+    width: 60%;
+}
+
+label {
+    margin-top: 20px !important;
+    text-transform: capitalize;
+}
+
+/*Action Icons*/
+svg.icon-view {
+    color: #D5006F !important;
+}
+
+svg.icon-add {
+    color: #026E39 !important;
+}
+
+svg.icon-delete {
+    color: #B40401 !important;
+}
+
+svg.icon-edit {
+    color: #55036E !important;
+}

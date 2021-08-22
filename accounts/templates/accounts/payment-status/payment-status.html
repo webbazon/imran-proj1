@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Payment Status | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+
+    <div class="d-flex justify-content-between small">
+        <div><h5 class="mt-4">{{ range }} Payment Status:</h5><br></div>
+        <div class="form-group mt-4">
+            <form id="dataperiodform" name="periodform" action="" method="POST" onchange="dataperiodform.submit();">
+            {% csrf_token %}
+            {% comment %} <label for="dataperiod"><h6>Period:</h6></label> {% endcomment %}
+            <select id="dataperiod" name="dataperiod">
+                <option value="">Select Period</option>
+                <option value="all_time">All Time</option>
+                <option value="today">Today</option>
+                <option value="last_7_days">Last 7 Days</option>
+                <option value="last_30_days">Last 30 Days</option>
+                <option value="last_60_days">Last 60 Days</option>
+                <option value="last_90_days">Last 90 Days</option>
+                <option value="current_month">Current Month</option>
+                <option value="current_year">Current Year</option>
+            </select>
+            </form>
+            <br>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="table-responsive-md">
+                        <table id="infoTable" class="display table table-bordered table-hover">
+                            <thead class="bg-dark text-white">
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Instances</th>
+                                    <th>Amount</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            {% for status in payments_status %}
+                                <tr>
+                                    <td>{{ status.payment_status }}</td>
+                                    <td>{{ status.pay_stat_count}}</td>
+                                    <td>${{ status.pay_stat_sum |floatformat:2}}</td>
+                                    <td><a href="{% url 'payment-status-edit' status.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                                    <td><a href="{% url 'payment-status-delete' status.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    <br>
+                    <a href="{% url 'payment-status-add' %}"><p class="btn btn-sm bg-dark text-white">Add Status</p></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card mb4">
+                <div class="card-body">
+                    <canvas id="paymentsChart" width="100%">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+                    <script>
+                        var ctx = document.getElementById("paymentsChart");
+                        var paymentsChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                            labels: {{ payment_labels|safe }},
+                            datasets: [{
+                                label: 'Payment Status',
+                                data: {{ payment_data|safe }},
+                                backgroundColor: ['#0A48DB', '#CC1C88', '#FCD300', '#93BF42', '#E9481C', '#A602AD', '#3A56F7', '#D11802', '#00A800', '#9A05BF', ],
+                            }],
+                            },
+                        });
+                    </script>
+                    </canvas>
+                </div>
+                <h6 class="text-center">Distribution of {{ range }} Payment Status</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

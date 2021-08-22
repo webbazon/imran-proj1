@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Employees | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+    <h5>&nbsp;</h5>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Employees Info</h4>
+            <div class="table-responsive-md">
+            <table id="infoTable" class="display table table-bordered table-hover">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Designation</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                {% for employee in employees_info %}
+                    <tr>
+                        <td>{{ employee.id }}</td>
+                        <td>{{ employee.employee_name }}</td>
+                        <td>{{ employee.designation }}</td>
+                        <td><a href="{% url 'employee-names-edit' employee.id %}"><i class="fas fa-edit icon-edit"></a></td>
+                        <td><a href="{% url 'employee-names-delete' employee.id %}"><i class="fas fa-trash-alt icon-delete"></a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            </div>
+            <br>
+            <a href="{% url 'employee-names-add' %}"><p class="btn btn-sm bg-dark text-white">Add Employee</p></a>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

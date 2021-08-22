@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Orders | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+
+  <div class="d-flex justify-content-between small">
+      <div><h5 class="mt-4">{{ range }} Order Stats:</h5><br></div>
+      <div class="form-group mt-4">
+        <form id="dataperiodform" name="periodform" action="" method="POST" onchange="dataperiodform.submit();">
+          {% csrf_token %}
+          {% comment %} <label for="dataperiod"><h6>Period:</h6></label> {% endcomment %}
+          <select id="dataperiod" name="dataperiod">
+            <option value="">Select Period</option>
+            <option value="all_time">All Time</option>
+            <option value="today">Today</option>
+            <option value="last_7_days">Last 7 Days</option>
+            <option value="last_30_days">Last 30 Days</option>
+            <option value="last_60_days">Last 60 Days</option>
+            <option value="last_90_days">Last 90 Days</option>
+            <option value="current_month">Current Month</option>
+            <option value="current_year">Current Year</option>
+          </select>
+        </form>
+        <br>
+      </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+          <h4 class="text-center text-dark-grey">{{ orders_count }}</h4>
+          <h6 class="text-center text-theme">Total Orders</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ orders_sum |floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Total Revenue</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ order_expenses |floatformat:2 }}</h4>
+            <h6 class="text-center text-theme">Order Expenses</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card bg-white text-dark mb-4">
+        <div class="card-body">
+            <h4 class="text-center text-dark-grey">${{ gross_profit |floatformat:2 }} <span class="badge bg-dark text-white font-weight-medium badge-pill small-text"> ({{ gross_profit_percentage |floatformat:2 }}%) </span></h4>
+            <h6 class="text-center text-theme">Gross Profit</h6>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            {% comment %} <div class="card-header bg-dark text-white">
+                <i class="fas fa-truck me-1"></i>
+                Delivery Status
+            </div> {% endcomment %}
+            <div class="card-body">
+                <h5>{{ range }} Delivery Status:</h5>
+                <canvas id="deliveryChartOrders" width="100%">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+                <script>
+                  var ctx = document.getElementById("deliveryChartOrders");
+                  var deliveryChartOrders = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                      labels: {{ delivery_labels|safe }},
+                      datasets: [{
+                        data: {{ delivery_data|safe }},
+                        backgroundColor: ['#F40000', '#7C007C', '#185B49', '#870E38', '#F7E100', '#010BE4', '#FF6100', '#C73EF7', '#DE139E', '#00B526', ],
+                      }],
+                    },
+                  });
+                </script>
+                </canvas>
+                <table class="mt-20 table table-hover table-bordered">
+                    <thead class="bg-light-grey text-dark">
+                    <tr>
+                        <th>Delivery Status</th>
+                        <th>Orders Count</th>
+                        <th>Amount</th>
+                    </tr>
+                    </thead>
+                    {% for status in deliveries_status %}
+                    <tr>
+                        <td>{{ status.delivery_status }}</td>
+                        <td>{{ status.del_stat_count }}</td>
+                        <td>${{ status.del_stat_sum |floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card mb-4">
+            {% comment %} <div class="card-header bg-dark text-white">
+                <i class="fas fa-money-bill-alt me-1"></i>
+                Payment Status
+            </div> {% endcomment %}
+            <div class="card-body">
+                <h5>{{ range }} Payment Status:</h5>
+                <canvas id="paymentChartOrders" width="100%">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+                <script>
+                  var ctx = document.getElementById("paymentChartOrders");
+                  var paymentChartOrders = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                      labels: {{ payment_labels|safe }},
+                      datasets: [{
+                        data: {{ payment_data|safe }},
+                        backgroundColor: ['#0A48DB', '#CC1C88', '#FCD300', '#93BF42', '#E9481C', '#A602AD', '#3A56F7', '#D11802', '#00A800', '#9A05BF', ],
+                      }],
+                    },
+                  });
+                </script>
+                </canvas>
+                <table class="mt-20 table table-hover table-bordered">
+                <thead class="bg-light-grey text-dark">
+                <tr>
+                    <th>Payment Status</th>
+                    <th>Orders Count</th>
+                    <th>Amount</th>
+                </tr>
+                </thead>
+                {% for status in payments_status %}
+                <tr>
+                    <td>{{ status.payment_status }}</td>
+                    <td>{{ status.pay_stat_count }}</td>
+                    <td>${{ status.pay_stat_sum |floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h4>Orders Table:</h4>
+        <form action="" method="get">
+          {{ myFilter.form }}
+          <button class="btn btn-sm bg-dark text-white" type="submit">Filter</button>
+        </form>
+        <div class="table-responsive-md">
+          <table id="infoTable" class="display table table-bordered table-hover">
+              <thead class="bg-dark text-white">
+                  <tr>
+                      <th>PO</th>
+                      <th>Date</th>
+                      <th>Details</th>
+                      <th>Customer</th>
+                      <th>City</th>
+                      <th>Value</th>
+                      <th>Delivery</th>
+                      <th>Inv#</th>
+                      <th>Pay Term</th>
+                      <th>Status</th>
+                      {% comment %} <th>View Customer</th> {% endcomment %}
+                      <th>View</th>
+                      <th>Edit</th>
+                  </tr>
+              </thead>
+              {% for order in orders_info %}
+                  <tr>
+                      <td>{{ order.order_ref }}</td>
+                      <td>{{ order.order_date |date:'d-m-Y' }}</td>
+                      <td>{{ order.description }}</td>
+                      <td>{{ order.customer }}</td>
+                      <td>{{ order.customer_city }}</td>
+                      <td>${{ order.value |floatformat:2 }}</td>
+                      <td>{{ order.delivery_status }}</td>
+                      <td>{{ order.invoice_details }}</td>
+                      <td>{{ order.payment_terms }}</td>
+                      <td>{{ order.payment_status }}</td>
+                      {% comment %} <td><a href="{% url 'customer' order.customer.customer_id %}"><i class="fas fa-user"></a></td> {% endcomment %}
+                      <td><a href="{% url 'order' order.order_ref %}"><i class="fas fa-eye icon-view"></a></td>
+                      <td><a href="{% url 'orders-edit' order.order_ref %}"><i class="fas fa-edit icon-edit"></a></td>
+                  </tr>
+              {% endfor %}
+          </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

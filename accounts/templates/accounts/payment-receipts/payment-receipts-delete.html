@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}Delete Payment | Dummy Inc. {% endblock title %} 
+
+{% block content %}
+
+<div class="container-fluid px-4">
+    <br><h5>&nbsp;</h5>
+    <div class="row">
+        <div class="col-xl-12 bg-white card-shadow">
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="card plain mb-4">
+                        <div class="card-body">
+                            <h5 class="text-danger" style="text-decoration: underline;">Confirm Client Payment Deletion:</h5>
+                            <br>
+                            <p>Are you sure you want to delete this inward payment worth <span style="font-weight: 700; color: #005BC1;">${{ payment.received_amount |floatformat:2 }}</span> from <span style="font-weight: 700; color: #005BC1;">{{ payment.customer }}</span> received on <span style="font-weight: 700; color: #005BC1;">{{ payment.payment_received_date }}</span> for <span style="font-weight: 700; color: #005BC1;">Order Ref# {{ payment.order_ref }}</span> ?</p>
+                            <p>Please note that this action can't be undone.</p>
+
+                            <form action="{% url 'payment-receipts-delete' payment.id %}" method="POST">
+                                {% csrf_token %}
+                                <a href="{% url 'payment-receipts' %}" class="btn btn-sm bg-dark text-white btn-form">No, Cancel</a>
+                                <input class="btn btn-sm btn-danger btn-form" type = "submit" value="Yes, Delete">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="card plain mb-4">
+                        <div class="card-body">
+                            <img src="{% static 'images/warning.png' %}" alt=" " width="50%">
+                        </div>
+                    </div>
+                </diV>
+            </div>
+        </diV>
+    </div>
+</div>
+
+{% endblock content %}

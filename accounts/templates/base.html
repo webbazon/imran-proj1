@@ -1,0 +1,222 @@
+{% load static %}
+{% url 'index' as index %}
+{% url 'orders' as ordersview %}
+{% url 'orders-create' as orderscreate %}
+{% url 'customers' as customersview %}
+{% url 'customers-add' as customersadd %}
+{% url 'vendors' as vendorsview %}
+{% url 'vendors-add' as vendorsadd %}
+{% url 'payment-receipts' as paymentreceipts %}
+{% url 'payment-receipts-add' as paymentreceiptsadd %}
+{% url 'expenses-orders' as expensesorders %}
+{% url 'expenses-general' as expensesgeneral %}
+{% url 'expenses-general-add' as expensesgeneraladd %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>{% block title %}Dummy Inc.{% endblock %}</title>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Amiko:wght@400;600;700&display=swap" rel="stylesheet">
+
+        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+        <link href="{% static './css/styles.css' %}" rel="stylesheet" />
+        <link href="{% static './css/custom.css' %}" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+        
+        <!-- Data Period Dropdown -->
+        <script src="{% static 'js/data-period-index.js' %}"></script>
+        <script src="{% static 'js/toggle.js' %}"></script>
+
+        <!-- Autocomplete -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        {% comment %} <link rel="stylesheet" href="/resources/demos/style.css"> {% endcomment %}
+
+        <link href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+        <script src="//cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+        <script src="//cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+        <script src="//cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+
+        <!--jQuery - Autocomplete -->
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        {% comment %} <link rel="stylesheet" href="/resources/demos/style.css"> {% endcomment %}
+
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" href="{% url 'index' %}">Dummy Inc.</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form method="POST" action="{% url 'search-customers' %}" class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input id="tags" class="form-control" type="search" name="searched" placeholder="Search Customers..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-dark" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark bg-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">HOME</div>
+                            <a class="nav-link {% if request.path == index %} active {%endif%}" href="{% url 'index' %}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
+                                Dashboard
+                            </a>
+                            <div class="sb-sidenav-menu-heading">MANAGE</div>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseOrders" aria-expanded="false" aria-controls="collapseOrders">
+                                <div class="sb-nav-link-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                                Orders
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseOrders" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {% if request.path == ordersview %} active {%endif%}" href="{% url 'orders' %}">View Orders</a>
+                                    <a class="nav-link {% if request.path == orderscreate %} active {%endif%}" href="{% url 'orders-create' %}">Create Orders</a>
+                                </nav>
+                            </div>
+
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCustomers" aria-expanded="false" aria-controls="collapseCustomers">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>
+                                Customers
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseCustomers" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {% if request.path == customersview %} active {%endif%}" href="{% url 'customers' %}">View Customers</a>
+                                    <a class="nav-link {% if request.path == customersadd %} active {%endif%}" href="{% url 'customers-add' %}">Add Customers</a>
+                                </nav>
+                            </div>
+
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseVendors" aria-expanded="false" aria-controls="collapseVendors">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user-tag"></i></div>
+                                Vendors
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseVendors" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {% if request.path == vendorsview %} active {%endif%}" href="{% url 'vendors' %}">View Vendors</a>
+                                    <a class="nav-link {% if request.path == vendorsadd %} active {%endif%}" href="{% url 'vendors-add' %}">Add Vendors</a>
+                                </nav>
+                            </div>
+
+
+                            
+                            
+                            <div class="sb-sidenav-menu-heading">REVENUE</div>
+                            <a class="nav-link {% if request.path == paymentreceipts %} active {%endif%}" href="{% url 'payment-receipts' %}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-money-bill-alt"></i></div>
+                                Received Payments
+                            </a>
+                            {% comment %} <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePaymentReceipts" aria-expanded="false" aria-controls="collapsePaymentReceipts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-money-bill-alt"></i></div>
+                                Received Payments
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsePaymentReceipts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {% if request.path == paymentreceipts %} active {%endif%}" href="{% url 'payment-receipts' %}">View Payments</a>
+                                    <a class="nav-link {% if request.path == paymentreceiptsadd %} active {%endif%}" href="{% url 'payment-receipts-add' %}">Add Payments</a>
+                                </nav>
+                            </div> {% endcomment %}
+
+
+                            <div class="sb-sidenav-menu-heading">EXPENSES</div>
+                            <a class="nav-link {% if request.path == expensesorders %} active {%endif%}" href="{% url 'expenses-orders' %}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-wallet"></i></div>
+                                Order Expenses
+                            </a>
+
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseGeneralExpenses" aria-expanded="false" aria-controls="collapseGeneralExpenses">
+                                <div class="sb-nav-link-icon"><i class="fas fa-wallet"></i></div>
+                                General Expenses
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseGeneralExpenses" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {% if request.path == expensesgeneral %} active {%endif%}" href="{% url 'expenses-general' %}">View Expenses</a>
+                                    <a class="nav-link {% if request.path == expensesgeneraladd %} active {%endif%}" href="{% url 'expenses-general-add' %}">Add Expenses</a>
+                                </nav>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        {{ request.user.first_name }} {{ request.user.last_name }}
+
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    {% block content %}
+
+                    {% endblock content %}
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Developed by: Imran Khan</div>
+                            {% comment %} <div class="text-muted">All Rights Reserved</div> {% endcomment %}
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+        <script src="{% static 'js/scripts.js' %}"></script>
+        <script src="{% static 'js/datatables-simple-demo.js' %}"></script>
+        <script src="{% static 'js/infotables.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+        <script>
+            $( function() {
+                var availableTags = [];
+                $( "#tags" ).autocomplete({
+                    source: "{% url 'autosuggest' %}",
+                });
+            } );
+        </script>
+    </body>
+</html>
