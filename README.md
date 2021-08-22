@@ -1,1 +1,1 @@
-# imran-proj1
+A Simple CRM/ Business Management Application for SMEs
